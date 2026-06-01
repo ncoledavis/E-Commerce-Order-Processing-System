@@ -1,0 +1,152 @@
+# Linked List Order System (With Diagrams, Reverse and Tests)
+
+## Overview
+This implementation simulates an e-commerce order system using a singly linked list.
+
+Features:
+- Append orders to the end
+- Display orders from first to last
+- Reverse the list (most recent first)
+- Includes timestamp for each order
+
+---
+
+## Visual Representation
+
+### Before Reversal (Oldest → Newest)
+```
+[Order1] -> [Order2] -> [Order3] -> None
+```
+
+### After Reversal (Newest → Oldest)
+```
+[Order3] -> [Order2] -> [Order1] -> None
+```
+
+---
+
+## Reverse Process (Step-by-Step)
+
+### Step 1
+```
+prev = None
+cur  = [1] -> [2] -> [3]
+```
+
+### Step 2
+```
+[1] -> None    [2] -> [3]
+prev = [1]
+```
+
+### Step 3
+```
+[2] -> [1] -> None    [3]
+prev = [2]
+```
+
+### Step 4
+```
+[3] -> [2] -> [1] -> None
+prev = [3] (new head)
+```
+
+---
+
+## Code
+
+```python
+from datetime import datetime
+
+class Order:
+    def __init__(self, id, customer, details):
+        self.id = id
+        self.customer = customer
+        self.details = details
+        self.time = datetime.now().strftime("%H:%M:%S")
+
+    def __str__(self):
+        return f"{self.id} | {self.customer} | {self.details} | {self.time}"
+
+
+class OrderList:
+    def __init__(self):
+        self.head = None
+
+    class Node:
+        def __init__(self, order):
+            self.order, self.next = order, None
+
+    def append(self, order):
+        new_node = self.Node(order)
+        if not self.head:
+            self.head = new_node
+            return
+        cur = self.head
+        while cur.next:
+            cur = cur.next
+        cur.next = new_node
+
+    def display(self):
+        cur = self.head
+        while cur:
+            print(cur.order)
+            cur = cur.next
+
+    def reverse(self):
+        prev, cur = None, self.head
+        while cur:
+            cur.next, prev, cur = prev, cur, cur.next
+        self.head = prev
+```
+
+---
+
+## Test Cases
+
+### 1. Empty List
+- No nodes
+
+### 2. Single Order
+```
+[1] -> None
+```
+
+### 3. Multiple Orders
+```
+Before:  [1] -> [2] -> [3]
+After:   [3] -> [2] -> [1]
+```
+
+---
+
+## Trade-offs
+
+### Append + Reverse
+**Pros:**
+- Maintains original order
+- Flexible viewing
+
+**Cons:**
+- Reverse is O(n)
+
+### Insert at Head (Alternative)
+```
+New -> Old
+[3] -> [2] -> [1]
+```
+
+**Pros:**
+- O(1) insert
+- Always newest first
+
+**Cons:**
+- Original order lost
+
+---
+
+## Optimization Insight
+- Append + Reverse = O(n)
+- Insert at Head = O(1)
+
+Choose based on whether you need speed or flexibility.
